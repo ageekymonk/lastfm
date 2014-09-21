@@ -5,21 +5,26 @@
 {% endblock heading %}
 
 {% block content %}
+    <form action="{{ url_for('mongo.artists.search') }}" method="POST" name="searchform">
+        <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input type="text" class="form-control" placeholder="search" name="searchterm">
+        </div>
+    </form>
     <ul class="list-group">
         {% for artist in user['artists'] %}
-                {% for a in artists %}
-                    {% if a['_id'] ==  artist['artist']%}
-                        <li class="list-group-item">
-                        <span class="badge"> {{ artist['playcount'] }}</span>
-                        <img src="{{ a['picture'] }}"/>
-                            <form action="listen/{{ artist['artist'] }}" method="POST">
-                                <button type="submit" class="btn btn-default btn-lg">
-                                    <span class="glyphicon glyphicon-play-circle"></span>
-                                </button>
-                            </form>
-                        </li>
-                    {% endif %}
-                {% endfor %}
+
+            <li class="list-group-item">
+            <span class="badge"> {{ artist['playcount'] }}</span>
+            <img src="{{ artist['picture'] }}"/>
+             <a href="{{ url_for('mongo.artists.view',id=artist['artist']) }}"> {{ artist['name'] }} </a>
+                <form action="listen/{{ artist['artist'] }}" method="POST">
+                    <button type="submit" class="btn btn-default btn-lg">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                    </button>
+                </form>
+            </li>
+
         {% endfor %}
     </ul>
 {% endblock content %}

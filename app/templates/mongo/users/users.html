@@ -7,6 +7,12 @@
 {% block content %}
     <h1> Friends List </h1>
     <ul class="list-group row">
+        <form action="{{ url_for('mongo.users.befriend') }}" method="POST" name="friendform">
+            <div class="input-group">
+                <span class="input-group-addon">@</span>
+                <input type="text" class="form-control" placeholder="Friend" name="friend">
+            </div>
+        </form>
         {% for friend in friends %}
             <li class="list-group-item col-xs-6">
                 <a href="{{ url_for('mongo.users.view',id=friend['_id']) }}"> <img src="{{ friend['picture'] }}" height="100px"/>
@@ -15,6 +21,7 @@
             </li>
         {% endfor %}
     </ul>
+
     <h1> Recommendation List </h1>
     <ul class="list-group row">
         {% for artist in reco_artist_info %}
