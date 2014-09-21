@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    Last FM
+{% endblock heading %}
+
+{% block content %}
+    <ul class="list-group">
+        {% for artist in user['artists'] %}
+                {% for a in artists %}
+                    {% if a['_id'] ==  artist['artist']%}
+                        <li class="list-group-item">
+                        <span class="badge"> {{ artist['playcount'] }}</span>
+                        <img src="{{ a['picture'] }}"/>
+                            <form action="listen/{{ artist['artist'] }}" method="POST">
+                                <button type="submit" class="btn btn-default btn-lg">
+                                    <span class="glyphicon glyphicon-play-circle"></span>
+                                </button>
+                            </form>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+        {% endfor %}
+    </ul>
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    {{ artist['name'] }}
+{% endblock heading %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-4">
+            <img src="{{ artist['picture'] }}"/>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="row">
+                <span class="badge"> Listeners: {{ listeners }}</span>
+            </div>
+            <div class="row">
+                <span class="badge"> Played: {{ played }}</span>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-play-circle"> Play</span>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="row" style="padding-top: 10px">
+        <div class="col-lg-4">
+            <div class="btn-group">
+                {% for tag in tag_list %}
+                    {% if loop.index < 10 %}
+                        <button type="button" class="btn btn-default btn-sm">{{ tag }}
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <ul class="list-group">
+            {% for friend in friends_list %}
+                <li class="list-group-item">{{ friend['_id'] }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content %}
