@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    Last FM
+{% endblock heading %}
+
+{% block content %}
+    <form action="{{ url_for('neo4j.artists.search') }}" method="POST" name="searchform">
+        <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input type="text" class="form-control" placeholder="search" name="searchterm">
+        </div>
+    </form>
+    <ul class="list-group">
+        {% for artist in artist_list %}
+
+            <li class="list-group-item">
+                <img src="{{ artist['picture'] }}"/>
+                <a href="{{ url_for('neo4j.artists.view',id=artist['id']) }}"> {{ artist['name'] }} </a>
+            </li>
+
+        {% endfor %}
+    </ul>
+{% endblock content %}
