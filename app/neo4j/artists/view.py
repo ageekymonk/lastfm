@@ -13,7 +13,9 @@ def before_request():
 @artists.route('/')
 def index():
     data, metadata = cypher.execute(app.graph_db, "MATCH (n:USER {{ id : {0}}}) RETURN (n)".format(int(session['user'])))
-    return render_template('neo4j/artists/artists.html', user=data[0])
+    match_data, metadata = cypher.execute(app.graph_db, "match (m:USER{{id:{0}}})-[l:LISTENS]"
+                                                        "->(n:ARTIST) return n,l".format(session['user']))
+    return render_template('neo4j/artists/artists.html', user=data[0], artist_data=match_data)
 
 @artists.route('/view/<id>')
 def view(id):

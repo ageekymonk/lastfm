@@ -11,20 +11,20 @@
             <input type="text" class="form-control" placeholder="search" name="searchterm">
         </div>
     </form>
-{#    <ul class="list-group">#}
-{#        {% for artist in user['artists'] %}#}
-{##}
-{#            <li class="list-group-item">#}
-{#            <span class="badge"> {{ artist['playcount'] }}</span>#}
-{#            <img src="{{ artist['picture'] }}"/>#}
-{#             <a href="{{ url_for('neo4j.artists.view',id=artist['artist']) }}"> {{ artist['name'] }} </a>#}
-{#                <form action="listen/{{ artist['artist'] }}" method="POST">#}
-{#                    <button type="submit" class="btn btn-default btn-lg">#}
-{#                        <span class="glyphicon glyphicon-play-circle"></span>#}
-{#                    </button>#}
-{#                </form>#}
-{#            </li>#}
-{##}
-{#        {% endfor %}#}
-{#    </ul>#}
+    <ul class="list-group">
+        {% for artist in artist_data %}
+
+            <li class="list-group-item">
+            <span class="badge"> {{ artist[1].count }}</span>
+            <img src="{{ artist[0]['picture'] }}"/>
+             <a href="{{ url_for('neo4j.artists.view',id=artist[0]['id']) }}"> {{ artist[0]['name'] }} </a>
+                <form action="listen/{{ artist[0]['id'] }}" method="POST">
+                    <button type="submit" class="btn btn-default btn-lg">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                    </button>
+                </form>
+            </li>
+
+        {% endfor %}
+    </ul>
 {% endblock content %}
