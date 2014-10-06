@@ -93,6 +93,32 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="neomongoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Neomongo DB Login</h4>
+            </div>
+            <div class="modal-body">
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li><a href="#register" role="tab" data-toggle="tab">Register</a></li>
+                    <li class="active"><a href="#login" role="tab" data-toggle="tab">Login</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="login">
+                        {{ wtf.quick_form(g.login_form,action=url_for('neomongo.auth.login')) }}
+                    </div>
+                    <div class="tab-pane" id="register">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="wrapper">
 
     <!-- Navigation -->
@@ -158,9 +184,6 @@
                                         <a href="{{ url_for('mongo.users.view', id=session['user']) }}"> My Profile </a>
                                     </li>
                                     <li>
-                                        <a href=""> Recommendations </a>
-                                    </li>
-                                    <li>
                                         <a href="{{ url_for('mongo.auth.logout') }}"> Logout </a>
                                     </li>
                                     {% endif %}
@@ -182,10 +205,28 @@
                                             <a href="{{ url_for('neo4j.users.view', id=session['user']) }}"> My Profile </a>
                                         </li>
                                         <li>
-                                            <a href=""> Recommendations </a>
+                                            <a href="{{ url_for('neo4j.auth.logout') }}"> Logout </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('neomongo.index') }}">Neo4j + mongodb <span class="fa arrow"></span> </a>
+                                <ul class="nav nav-third-level">
+                                    {% if not session['user']  %}
+                                        <li>
+                                            <a href="#" onclick="$('#neomongoModal').modal()"> Login </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if session['user'] %}
+                                        <li>
+                                            <a href="{{ url_for('neomongo.artists.index') }}"> Artists </a>
                                         </li>
                                         <li>
-                                            <a href="{{ url_for('neo4j.auth.logout') }}"> Logout </a>
+                                            <a href="{{ url_for('neomongo.users.view', id=session['user']) }}"> My Profile </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('neomongo.auth.logout') }}"> Logout </a>
                                         </li>
                                     {% endif %}
                                 </ul>

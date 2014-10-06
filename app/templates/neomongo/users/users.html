@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    Profile
+{% endblock heading %}
+
+{% block content %}
+    <h1> Friends List </h1>
+    <ul class="list-group row">
+        <form action="{{ url_for('neomongo.users.befriend') }}" method="POST" name="friendform">
+            <div class="input-group">
+                <span class="input-group-addon">@</span>
+                <input type="text" class="form-control" placeholder="Friend" name="friend">
+            </div>
+        </form>
+        {% for friend in friends %}
+            <li class="list-group-item col-xs-6">
+                <a href="{{ url_for('neomongo.users.view',id=friend['id']) }}"> <img src="{{ friend['picture'] }}" height="100px"/>
+                    {{ friend['name'] }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h1> Recommendation List </h1>
+    <ul class="list-group row">
+        {% for artist in reco_artist_info %}
+            <li class="list-group-item col-xs-6">
+                <a href="{{ url_for('neomongo.artists.view',id=artist['id']) }}"> <img src="{{ artist['picture'] }}" height="100px"/>
+                    {{ artist['name'] }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

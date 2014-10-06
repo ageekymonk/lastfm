@@ -16,12 +16,10 @@ def before_request():
 def index():
     if not session['user']:
         return redirect(url_for('/'))
-    match_data,metadata = cypher.execute(app.graph_db,"match (n:USER{{ id: {0}}})-[r:FRIEND]->(m:USER) return n,r,m".format(session['user']) )
-    friends_data = []
-    for datum in match_data:
-        friends_data.append(datum[2])
-    user_data = match_data[0][0]
-    return render_template('neo4j/users/users.html',user=user_data, friends=friends_data)
+    database = app.db_client.music
+    user_data = database.users.find_one({'_id' : session['user']})
+    friends_data = database.users.find({'_id' : {"$in" : user_data['friends']}})
+    return render_template('neomongo/users/users.html',user=user_data, friends=friends_data)
 
 @users.route('/profile/<id>')
 def view(id):
@@ -41,9 +39,9 @@ def view(id):
                                                         "order by count(l) desc".format(id))
 
     # Recommend based on number of listen count among the friends
-    reco_artist_info.extend(map(lambda x: x[0], sorted(match_data, key=lambda x: int(x[1]))[:5]))
+    reco_artist_info.extend(map(lambda x: x[0], sorted(match_data, key=lambda x: x[1])[:5]))
     # Recommend based on number of listen count among the friends
-    reco_artist_info.extend(map(lambda x: x[0], sorted(match_data, key=lambda x: int(x[2]), reverse=True)[:5]))
+    reco_artist_info.extend(map(lambda x: x[0], sorted(match_data, key=lambda x: x[2])[:5]))
 
     # Recommend based on random tag from your list
     match_data, metadata = cypher.execute(app.graph_db, "match (m:USER{{id:{0}}})-[l:TAGS]->(n:ARTIST) "
@@ -59,11 +57,14 @@ def view(id):
     for datum in match_data:
         reco_artist_info.append(datum[0])
 
-    return render_template('neo4j/users/users.html',user=user_data, friends=friends_data, reco_artist_info=reco_artist_info)
+    return render_template('neomongo/users/users.html',user=user_data, friends=friends_data, reco_artist_info=reco_artist_info)
+
 
 @users.route('/befriend', methods=["POST"])
 def befriend():
-    id = int(request.form['friend'])
+    database = app.db_client.music
+    print {'_id' : session['user']}, {"$addToSet" : {'friends' : request.form['friend']}}
+    database.users.update({'_id' : session['user']}, {"$addToSet" : {'friends' : int(request.form['friend'])}})
     tag_data,metadata=cypher.execute(app.graph_db, "match (m:USER{{id:{0}}}),(n:USER{{id:{1}}}) "
-                                                   "create unique m-[r:FRIEND]->n".format(session['user'], id))
-    return redirect(url_for('neo4j.users.view',id=session['user']))
+                                                   "create unique m-[r:FRIEND]->n".format(session['user'], int(request.form['friend'])))
+    return redirect(url_for('neomongo.users.view',id=session['user']))

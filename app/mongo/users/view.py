@@ -31,17 +31,20 @@ def view(id):
     reco_type_info = {}
     for friend_data in friends_data:
         for artist in friend_data['artists']:
-            reco_type_info[artist['artist']] = reco_type_info.get(artist['artist'],0) + 1
+            if artist['artist'] not in user_artist_list:
+                reco_type_info[artist['artist']] = reco_type_info.get(artist['artist'],0) + 1
 
-    reco_artist_list.extend(sorted(reco_type_info, key=reco_type_info.get)[0:5])
+    reco_artist_list.extend(sorted(reco_type_info, key=reco_type_info.get, reverse=True)[0:5])
 
     # Recommend based on number of listen count among the friends
     reco_type_info = {}
     for friend_data in friends_data:
         for artist in friend_data['artists']:
-            reco_type_info[artist['artist']] = reco_type_info.get(artist['artist'],0) + artist['playcount']
+            if artist['artist'] not in user_artist_list:
+                reco_type_info[artist['artist']] = reco_type_info.get(artist['artist'],0) + artist['playcount']
 
-    reco_artist_list.extend(sorted(reco_type_info, key=reco_type_info.get)[0:5])
+
+    reco_artist_list.extend(sorted(reco_type_info, key=reco_type_info.get, reverse=True)[0:5])
     # reco_artist_info = [data for data in database.artists.find({'_id' : {"$in" : reco_artist_list}})]
     #
     # Recommend based on tag list
@@ -57,9 +60,10 @@ def view(id):
     unique_listener = {}
     for datum in users_artist_data:
         for artist in datum['artists']:
-            unique_listener[artist['artist']] = unique_listener.get(artist['artist'],0) + 1
+            if artist['artist'] not in user_artist_list:
+                unique_listener[artist['artist']] = unique_listener.get(artist['artist'],0) + 1
 
-    reco_artist_list.extend(sorted(unique_listener, key=unique_listener.get)[0:5])
+    reco_artist_list.extend(sorted(unique_listener, key=unique_listener.get, reverse=True)[0:5])
     reco_artist_info = [data for data in database.artists.find({'_id' : {"$in" : reco_artist_list}})]
 
     return render_template('mongo/users/users.html',user=user_data, friends=friends_data, reco_artist_info=reco_artist_info)

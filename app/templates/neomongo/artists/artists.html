@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+    Last FM
+{% endblock heading %}
+
+{% block content %}
+    <form action="{{ url_for('neomongo.artists.search') }}" method="POST" name="searchform">
+        <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input type="text" class="form-control" placeholder="search" name="searchterm">
+        </div>
+    </form>
+    <ul class="list-group">
+        {% for artist in user['artists'] %}
+
+            <li class="list-group-item">
+            <span class="badge"> {{ artist['playcount'] }}</span>
+            <img src="{{ artist['picture'] }}"/>
+             <a href="{{ url_for('neomongo.artists.view',id=artist['artist']) }}"> {{ artist['name'] }} </a>
+                <form action="listen/{{ artist['artist'] }}" method="POST">
+                    <button type="submit" class="btn btn-default btn-lg">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                    </button>
+                </form>
+            </li>
+
+        {% endfor %}
+    </ul>
+{% endblock content %}

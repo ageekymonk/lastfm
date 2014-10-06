@@ -35,7 +35,7 @@ def view(id):
     for datum in listen_data:
         playcount = playcount + datum[0]['count']
 
-    tag_data, metadata = cypher.execute(app.graph_db, "match (n:USER)-[l:TAGS]->(m:ARTIST {{ id  : {0} }}) RETURN n,l,m".format(id))
+    tag_data, metadata = cypher.execute(app.graph_db, "match (n:USER)-[l:TAGS]->(m:ARTIST {{ id  : {0} }}) where n.id <> {1} RETURN n,l,m".format(id, session['user']))
     for datum in tag_data:
         tag_list.extend(datum[1]['tags'])
 
@@ -56,6 +56,11 @@ def tag(id):
                                                    "create unique m-[r:TAGS]->n set r.tags = "
                                                    "case when not (has (r.tags)) then [] when not '{2}' in r.tags "
                                                    "then r.tags + '{2}' else r.tags end;".format(session['user'], id,request.form['tags']))
+
+    tag_data,metadata = cypher.execute(app.graph_db, "MATCH (n:USER {{id: {0} }}), (m: ARTIST {{id: {1}}}) "
+                        "CREATE unique (n)-[:`{2}`]->m RETURN n".format(session['user'],id,request.form['tags']))
+
+    #TODO Add another query to create a new relationship with the tag
     return redirect(url_for('neo4j.artists.view',id=id))
 
 @artists.route('/search', methods=["POST"])

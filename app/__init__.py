@@ -46,4 +46,15 @@ def create_app(config_name):
     from .neo4j.users import users as neo4j_users_blueprint
     app.register_blueprint(neo4j_users_blueprint, url_prefix='/neo4j/users')
 
+    from .neomongo import neomongo as neomongo_blueprint
+    app.register_blueprint(neomongo_blueprint, url_prefix='/neomongo')
+
+    from .neomongo.artists import artists as neomongo_artists_blueprint
+    app.register_blueprint(neomongo_artists_blueprint, url_prefix = '/neomongo/artists')
+
+    from .neomongo.auth import auth as neomongo_auth_blueprint
+    app.register_blueprint(neomongo_auth_blueprint, url_prefix='/neomongo/auth')
+
+    from .neomongo.users import users as neomongo_users_blueprint
+    app.register_blueprint(neomongo_users_blueprint, url_prefix='/neomongo/users')
     return app
